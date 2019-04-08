@@ -18,6 +18,33 @@ try:
 except (ImportError,ModuleNotFoundError):
     warnings.warn('Warning: install pyperclip for convert_clipboard')
 
+__doc__=\
+"""
+# Constructor
+JnrlAbbreviator(nproc)    
+    nproc: number of processors to initialize with (aftwards runs only as serial)
+  
+# Functions
+convert(jname)
+    Convert a single entry, returns abbreviation. 
+    If input is abbreviation, returns that abbreviation
+    
+    jname: name of journal (string)
+      
+    Output
+      abbreviation (string)
+
+convet_clipboard()
+    Fetches journal name from clipboard, and places abbreviation back on clipboard. 
+  
+convert_bibfile(filename,inplace=False)
+    Search bibtext ".bib" file for journal entries and write a new file with the abbreviations. 
+    
+    filename: path to file to read
+    inplace:  overwrite input file. Otherwise makes a copy with suffix "_jabbr "in the same directory
+"""
+
+
 # =========================================================================== #
 class JrnlAbbreviator(object):
     
@@ -157,19 +184,13 @@ class JrnlAbbreviator(object):
                 # if in index, replace
                 lines[i] = 'journal = {%s},\n'%abbrev
             
-            # get output filename
-            if inplace:
-                filename2 = filename
-            else:
-                filename2 = os.path.splitext(filename)[0]+'_converted.bib'
-                
-            # write to file
-            with open(filename2,'w') as fid:
-                for l in lines:
-                    fid.write(l)
-    
-    # ======================================================================= #
-    def convert_list(self,jlist):
-        """Convert based on list and return list"""
-        return [self.convert(j) for j in jlist]
-    
+        # get output filename
+        if inplace:
+            filename2 = filename
+        else:
+            filename2 = os.path.splitext(filename)[0]+'_jabbr.bib'
+            
+        # write to file
+        with open(filename2,'w') as fid:
+            for l in lines:
+                fid.write(l)
